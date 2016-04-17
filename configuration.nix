@@ -2,9 +2,7 @@
 
 {
   imports =
-    [ # Include the results of the hardware scan.
-      ./hardware-configuration.nix
-    ];
+    [ ./hardware-configuration.nix ];
 
   boot.loader.grub.enable = true;
   boot.loader.grub.version = 2;
@@ -12,52 +10,66 @@
 
   boot.initrd.checkJournalingFS = false;
 
-  networking.hostName = "lime";
-  # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
+  networking.hostName = "nixos"; # Define your hostname.
 
   i18n = {
-    consoleFont = "lat9w-16";
-    consoleKeyMap = "uk";
+    consoleFont = "Lat2-Terminus16";
+    consoleKeyMap = "us-acentos";
     defaultLocale = "en_GB.UTF-8";
   };
 
+  services.vmwareGuest.enable = true;
+
   time.timeZone = "Europe/London";
 
-  # List packages installed in system profile. To search by name, run:
-  # $ nix-env -qaP | grep wget
   environment.systemPackages = with pkgs; [
     emacs
     git
-    mosh
+    gnupg
     vim
     wget
   ];
 
-  services.openssh.enable = true;
+  fonts.enableFontDir = true;
+  fonts.enableCoreFonts = true;
+  fonts.enableGhostscriptFonts = true;
+  fonts.fonts = with pkgs; [
+    bakoma_ttf
+    corefonts
+    dejavu_fonts
+    gentium
+    inconsolata
+    liberation_ttf
+    source-code-pro
+    terminus_font
+    ubuntu_font_family
+  ];
 
   programs.zsh.enable = true;
-  users.defaultUserShell = "/run/current-system/sw/bin/zsh";
+
+  services.openssh.enable = true;
+
+  services.xserver = {
+    enable = true;
+    layout = "us";
+    xkbOptions = "eurosign:e";
+    displayManager.lightdm.enable = true;
+    windowManager.xmonad.enable = true;
+    windowManager.xmonad.enableContribAndExtras = true;
+    desktopManager.xterm.enable = false;
+    desktopManager.xfce.enable = true;
+    desktopManager.default = "xfce";
+  };
 
   users.extraUsers.jcf = {
     createHome = true;
     description = "James Conroy-Finn";
-    extraGroups = [ "wheel" "cdrom" "disk" "networkmanager" ];
-    home = "/home/jcf";
     isNormalUser = true;
-    shell = "/run/current-system/sw/bin/zsh";
+    home = "/home/jcf";
+    extraGroups = [ "networkmanager" "wheel" ];
     uid = 1000;
-
-    openssh.authorizedKeys.keys = [ "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCla5pT6waAIhSbp6qMq7OmpsxEqm7JcRU2NWOXQFYVE+vi3hcys8Rovg30mGDoul1JpGGTzMMtClFeYuEfS6MdNyRK70EqO1uHkFyZUBLxsrx48tiNVbDsCQvZMZ/fBnMfDI4tO1VOcwZ+ElK8+3qEke3F3WS9YRCAKa6k2sCjdzE9Fvo2Ji1uOPl5RLsm6yxmSWDLKO4f3NDC9e/NNH/keWzw05sMRDXKi8jFXzLZQO6dZZ3McFhMkRRJE2mSs52s0HE7Az1NQSk3kzmApj5LOv1Y6PJXR2LhtfZpuof2LuEbMzQpYpJ45y3bTAAssT2t/SDwqmHnKGzYG4oNB2DF" ];
+    shell = "/run/current-system/sw/bin/zsh";
   };
 
-  security.sudo.enable = true;
-
-  # The NixOS release to be compatible with for stateful data such as databases.
   system.stateVersion = "15.09";
-
-  fileSystems = [
-    { mountPoint = "/";
-      label = "nixos";
-    }
-  ];
 }
