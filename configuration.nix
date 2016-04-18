@@ -14,7 +14,7 @@
 
   i18n = {
     consoleFont = "Lat2-Terminus16";
-    consoleKeyMap = "us-acentos";
+    consoleKeyMap = "uk";
     defaultLocale = "en_GB.UTF-8";
   };
 
@@ -51,7 +51,7 @@
 
   services.xserver = {
     enable = true;
-    layout = "us";
+    layout = "gb";
     xkbOptions = "eurosign:e";
     displayManager.lightdm.enable = true;
     windowManager.xmonad.enable = true;
